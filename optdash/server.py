@@ -32,19 +32,22 @@ class StudyCache:
         self.summary_cache: Optional[List[optuna.study.StudySummary]] = None
         self.database_url = database_url
 
+    def _get_study_summary(self) -> List[optuna.study.StudySummary]:
+        if self.summary_cache is not None:
+            return self.summary_cache
+        summary = optuna.get_all_study_summaries(storage=self.database_url)
+        self.summary_cache = summary
+        return summary
+
     def get_study_summary(self) -> List[optuna.study.StudySummary]:
         with self.lock:
-            if self.summary_cache is not None:
-                return self.summary_cache
-            summary = optuna.get_all_study_summaries(storage=self.database_url)
-            self.summary_cache = summary
-            return summary
+            return self._get_study_summary()
 
     def get_study(self, study_name: Optional[str], cache: bool = True) -> optuna.study.Study:
         if study_name is None:
             raise FileNotFoundError()
         with self.lock:
-            if study_name not in [study.study_name for study in self.get_study_summary()]:
+            if study_name not in [study.study_name for study in self._get_study_summary()]:
                 raise FileNotFoundError
             if study_name not in self.study_cache:
                 study = optuna.load_study(
@@ -114,7 +117,7 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                             study_name = study_name[0] if study_name else None
                         study = self._study_cache.get_study(study_name)
                         parameter_names = set()
-                        for trial in study.trials:
+                        for trial in study.get_trials(deepcopy=False):
                             for param_name in trial.params.keys():
                                 parameter_names.add(param_name)
                         buffer = json.dumps({"parameter-names": list(parameter_names)}).encode(

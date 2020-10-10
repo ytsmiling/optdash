@@ -18,24 +18,6 @@ function App() {
       <Header />
       <Sidebar onclick_hook={(v: string) => { setContentType(v); }} />
       <div className="App-main">
-        <div>
-          <label htmlFor="study-name-choice">Study name: </label>
-          <input list="study-name" id="study-name-choice" name="ice-cream-choice" />
-
-          <datalist id="study-name">
-            {study_summaries.map((x) => <option value={x["name"]} />)}
-          </datalist>
-
-          <button onClick={
-            () => {
-              let name_choices = document.getElementById("study-name-choice") as HTMLInputElement;
-              if (name_choices !== null) {
-                setStudyName(name_choices.value);
-              }
-            }
-          }>Use
-          </button>
-        </div>
         <Content content_type={content_type} study_summaries={study_summaries} />
       </div>
     </div>
