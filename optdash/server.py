@@ -20,6 +20,7 @@ import webbrowser
 
 import optuna
 
+from optdash.plot_data import build_plot_data
 from optdash.version import __version__
 
 __all__: List[str] = []
@@ -105,7 +106,7 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                                     "num-trials": study.n_trials,
                                     "direction": study.direction.name,
                                 }
-                                for study in studies
+                                for study in sorted(studies, key=lambda s: s.study_name)
                             ]
                         }
                         buffer = json.dumps(study_summaries).encode("utf-8")
@@ -120,9 +121,29 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                         for trial in study.get_trials(deepcopy=False):
                             for param_name in trial.params.keys():
                                 parameter_names.add(param_name)
-                        buffer = json.dumps({"parameter-names": list(parameter_names)}).encode(
-                            "utf-8"
+                        buffer = json.dumps(
+                            {"parameter-names": list(sorted(parameter_names))}
+                        ).encode("utf-8")
+                    elif data_type == "plot-data":
+                        query_params = parse_qs(parsed_url.query)
+                        study_name = query_params.get(
+                            "study-name", None
                         )
+                        if isinstance(study_name, list):
+                            study_name = study_name[0] if study_name else None
+                        study = self._study_cache.get_study(study_name)
+                        study_names: Optional[Union[str, List[str]]] = query_params.get(
+                            "study-names", None
+                        )
+                        if study_names is None:
+                            study_names = []
+                        if not isinstance(study_names, list):
+                            study_names = [study_names]
+                        study_list = [
+                            self._study_cache.get_study(sn, cache=False) for sn in study_names
+                        ]
+                        plot_data = build_plot_data(study, study_list, query_params)
+                        buffer = json.dumps(plot_data).encode("utf-8")
                     else:
                         raise FileNotFoundError()
                     headers["Content-Type"] = "application/json"
