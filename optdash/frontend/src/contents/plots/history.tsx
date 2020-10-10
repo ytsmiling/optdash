@@ -3,7 +3,7 @@ import Plot from "react-plotly.js";
 import ElementSelection from '../inputs/element-selection';
 import fetch_data from "../../utils/fetch-data"
 
-function InterMediatePlot(props: { study_summaries: Array<any> }) {
+function HistoryPlot(props: { study_summaries: Array<any> }) {
     const [plot_data, setPlotData] = useState([]);
     const [study_name, setStudyName] = useState("");
 
@@ -17,7 +17,7 @@ function InterMediatePlot(props: { study_summaries: Array<any> }) {
         fetch_data(
             "/api/plot-data",
             [
-                ["type", "intermediate-values"],
+                ["type", "history"],
                 ["study-name", study_name],
             ],
             setPlotData,
@@ -34,7 +34,7 @@ function InterMediatePlot(props: { study_summaries: Array<any> }) {
                     {
                         width: width,
                         height: height,
-                        title: 'Intermediate values.',
+                        title: 'History.',
                         xaxis: { title: "Step" },
                         yaxis: { title: "Value" },
                     }
@@ -44,4 +44,4 @@ function InterMediatePlot(props: { study_summaries: Array<any> }) {
     );
 }
 
-export default InterMediatePlot;
+export default HistoryPlot;
