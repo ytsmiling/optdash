@@ -1,0 +1,17 @@
+.study-list {
+    font-size: calc(10px + 1vmin);
+    margin-left: 10vw;
+    background-color: black;
+}
+
+.study-list th {
+    padding-left: calc(5px + 1vmin);
+    padding-right: calc(5px + 1vmin);
+    background-color: mintcream;
+}
+
+.study-list td {
+    padding-left: calc(5px + 1vmin);
+    padding-right: calc(5px + 1vmin);
+    background-color: whitesmoke;
+}

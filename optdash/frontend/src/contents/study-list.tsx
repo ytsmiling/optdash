@@ -1,11 +1,12 @@
 import React from 'react';
+import './study-list.css'
 
 function StudyList(props: { study_summaries: Array<any> }) {
     return (
-        <table className="studies">
+        <table className="study-list">
             <thead>
                 <tr>
-                    <th>name</th>
+                    <th>study name</th>
                     <th>#trials</th>
                     <th>best</th>
                     <th>direction</th>
@@ -15,10 +16,10 @@ function StudyList(props: { study_summaries: Array<any> }) {
                 {
                     props.study_summaries.map(
                         (x) => <tr>
-                            <th>{x["name"]}</th>
-                            <th>{x["num-trials"]}</th>
-                            <th>{x["best-value"]}</th>
-                            <th>{x["direction"]}</th>
+                            <td>{x["name"]}</td>
+                            <td>{x["num-trials"]}</td>
+                            <td>{x["best-value"]}</td>
+                            <td>{x["direction"]}</td>
                         </tr>
                     )
                 }
