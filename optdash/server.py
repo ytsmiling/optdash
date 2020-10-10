@@ -18,48 +18,12 @@ from urllib.parse import parse_qs
 from urllib.parse import urlparse
 import webbrowser
 
-import optuna
-
 from optdash.plot_data import build_plot_data
+from optdash.study import Study
+from optdash.study import StudyCache
 from optdash.version import __version__
 
 __all__: List[str] = []
-
-
-class StudyCache:
-    def __init__(self, database_url: str) -> None:
-        self.lock = threading.Lock()
-        self.study_cache: Dict[str, optuna.Study] = {}
-        self.summary_cache: Optional[List[optuna.study.StudySummary]] = None
-        self.database_url = database_url
-
-    def _get_study_summary(self) -> List[optuna.study.StudySummary]:
-        if self.summary_cache is not None:
-            return self.summary_cache
-        summary = optuna.get_all_study_summaries(storage=self.database_url)
-        self.summary_cache = summary
-        return summary
-
-    def get_study_summary(self) -> List[optuna.study.StudySummary]:
-        with self.lock:
-            return self._get_study_summary()
-
-    def get_study(self, study_name: Optional[str], cache: bool = True) -> optuna.study.Study:
-        if study_name is None:
-            raise FileNotFoundError()
-        with self.lock:
-            if study_name not in [study.study_name for study in self._get_study_summary()]:
-                raise FileNotFoundError
-            if study_name not in self.study_cache:
-                study = optuna.load_study(
-                    study_name=study_name,
-                    storage=self.database_url,
-                )
-                if cache:
-                    self.study_cache = {study_name: study}
-                else:
-                    return study
-            return self.study_cache[study_name]
 
 
 def create_request_handler_class(study_cache: StudyCache) -> type:
@@ -118,7 +82,7 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                             study_name = study_name[0] if study_name else None
                         study = self._study_cache.get_study(study_name)
                         parameter_names = set()
-                        for trial in study.get_trials(deepcopy=False):
+                        for trial in study.trials:
                             for param_name in trial.params.keys():
                                 parameter_names.add(param_name)
                         buffer = json.dumps(
@@ -130,7 +94,7 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                         if isinstance(study_name, list):
                             study_name = study_name[0] if study_name else None
                         if study_name is None:
-                            optional_study: Optional[optuna.Study] = None
+                            optional_study: Optional[Study] = None
                         else:
                             optional_study = self._study_cache.get_study(study_name)
                         study_names: Optional[Union[str, List[str]]] = query_params.get(

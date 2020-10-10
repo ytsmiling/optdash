@@ -4,6 +4,7 @@ import Contour from './plots/contour';
 import EdfPlot from './plots/edf';
 import InterMediatePlot from './plots/intermediate-values';
 import HistoryPlot from './plots/history';
+import ParallelCoordinatePlot from './plots/parallel-coordinate';
 
 function Content(props: { content_type: string, study_summaries: Array<any> }) {
     if (props.content_type == "study-list") {
@@ -16,6 +17,8 @@ function Content(props: { content_type: string, study_summaries: Array<any> }) {
         return <InterMediatePlot study_summaries={props.study_summaries} />
     } else if (props.content_type == "history") {
         return <HistoryPlot study_summaries={props.study_summaries} />
+    } else if (props.content_type == "parallel") {
+        return <ParallelCoordinatePlot study_summaries={props.study_summaries} />
     } else {
         return <div></div>
     }

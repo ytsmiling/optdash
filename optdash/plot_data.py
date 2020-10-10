@@ -6,9 +6,10 @@ from typing import Optional
 from urllib.parse import unquote
 import numpy as np
 import optuna
-from optuna.study import Study
 from optuna.study import StudyDirection
 from optuna.trial import TrialState
+
+from optdash.study import Study
 
 
 def build_plot_data(
@@ -26,7 +27,7 @@ def build_plot_data(
         return build_parallel_coordinate_plot_data(study, query_params)
     elif query_params["type"][0] == "parameter-importance":
         return build_importance_plot_data(study, query_params)
-    raise ValueError()
+    raise ValueError(query_params["type"])
 
 
 def build_contour_plot_data(
@@ -38,7 +39,7 @@ def build_contour_plot_data(
     param_y = unquote(query_params["param-y"][0])
     trials = [
         t
-        for t in study.get_trials(deepcopy=False)
+        for t in study.trials
         if param_x in t.params and param_y in t.params and t.state == TrialState.COMPLETE
     ]
 
@@ -55,22 +56,14 @@ def build_contour_plot_data(
 def build_edf_plot_data(studies: List[Study], query_params: Dict[str, List[str]]) -> List[Dict]:
     value_list = []
     for study in studies:
-        all_trials = [
-            trial
-            for trial in study.get_trials(deepcopy=False)
-            if trial.state == TrialState.COMPLETE
-        ]
+        all_trials = [trial for trial in study.trials if trial.state == TrialState.COMPLETE]
 
         min_x_value = min(trial.value for trial in all_trials)
         max_x_value = max(trial.value for trial in all_trials)
         x_values = np.linspace(min_x_value, max_x_value, 100)
 
         values = np.asarray(
-            [
-                trial.value
-                for trial in study.get_trials(deepcopy=False)
-                if trial.state == TrialState.COMPLETE
-            ]
+            [trial.value for trial in study.trials if trial.state == TrialState.COMPLETE]
         )
 
         y_values = np.sum(values[:, np.newaxis] <= x_values, axis=0) / values.size
@@ -95,7 +88,7 @@ def build_intermediate_values_plot_data(
         raise FileNotFoundError()
     trials = [
         trial
-        for trial in sorted(study.get_trials(deepcopy=False), key=lambda x: x.number)
+        for trial in sorted(study.trials, key=lambda x: x.number)
         if trial.state == TrialState.COMPLETE
     ]
 
@@ -118,7 +111,7 @@ def build_history_plot_data(
         raise FileNotFoundError
     trials = [
         trial
-        for trial in sorted(study.get_trials(deepcopy=False), key=lambda x: x.number)
+        for trial in sorted(study.trials, key=lambda x: x.number)
         if trial.state == TrialState.COMPLETE
     ]
     values = [trial.value for trial in trials]
@@ -152,14 +145,10 @@ def build_parallel_coordinate_plot_data(
 ) -> List[Dict]:
     if study is None:
         raise FileNotFoundError
-    if "param-names" in query_params:
-        param_names = unquote(query_params["param-names"][0]).split(",")
-        param_names = [pname for pname in param_names if pname]
-    else:
-        param_names = []
+    param_names = query_params["param-names"] if "param-names" in query_params else []
     trials = [
         trial
-        for trial in sorted(study.get_trials(deepcopy=False), key=lambda x: x.number)
+        for trial in sorted(study.trials, key=lambda x: x.number)
         if trial.state == TrialState.COMPLETE
         and all(pname in trial.params for pname in param_names)
     ]
@@ -196,7 +185,7 @@ def build_importance_plot_data(
         param_names = []
 
     importances = optuna.importance.get_param_importances(
-        study, evaluator=None, params=param_names
+        study, evaluator=None, params=param_names  # type: ignore
     )
 
     importances = dict(reversed(list(importances.items())))
