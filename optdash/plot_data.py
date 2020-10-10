@@ -1,6 +1,7 @@
 from functools import reduce
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from urllib.parse import unquote
 import numpy as np
@@ -11,7 +12,7 @@ from optuna.trial import TrialState
 
 
 def build_plot_data(
-    study: Study, studies: List[Study], query_params: Dict[str, List[str]]
+    study: Optional[Study], studies: List[Study], query_params: Dict[str, List[str]]
 ) -> List[Dict]:
     if query_params["type"][0] == "contour":
         return build_contour_plot_data(study, query_params)
@@ -28,7 +29,11 @@ def build_plot_data(
     raise ValueError()
 
 
-def build_contour_plot_data(study: Study, query_params: Dict[str, List[str]]) -> List[Dict]:
+def build_contour_plot_data(
+    study: Optional[Study], query_params: Dict[str, List[str]]
+) -> List[Dict]:
+    if study is None:
+        raise FileNotFoundError()
     param_x = unquote(query_params["param-x"][0])
     param_y = unquote(query_params["param-y"][0])
     trials = [
@@ -84,8 +89,10 @@ def build_edf_plot_data(studies: List[Study], query_params: Dict[str, List[str]]
 
 
 def build_intermediate_values_plot_data(
-    study: Study, query_params: Dict[str, List[str]]
+    study: Optional[Study], query_params: Dict[str, List[str]]
 ) -> List[Dict]:
+    if study is None:
+        raise FileNotFoundError()
     trials = [
         trial
         for trial in sorted(study.get_trials(deepcopy=False), key=lambda x: x.number)
@@ -104,7 +111,11 @@ def build_intermediate_values_plot_data(
     ]
 
 
-def build_history_plot_data(study: Study, query_params: Dict[str, List[str]]) -> List[Dict]:
+def build_history_plot_data(
+    study: Optional[Study], query_params: Dict[str, List[str]]
+) -> List[Dict]:
+    if study is None:
+        raise FileNotFoundError
     trials = [
         trial
         for trial in sorted(study.get_trials(deepcopy=False), key=lambda x: x.number)
@@ -137,8 +148,10 @@ def build_history_plot_data(study: Study, query_params: Dict[str, List[str]]) ->
 
 
 def build_parallel_coordinate_plot_data(
-    study: Study, query_params: Dict[str, List[str]]
+    study: Optional[Study], query_params: Dict[str, List[str]]
 ) -> List[Dict]:
+    if study is None:
+        raise FileNotFoundError
     if "param-names" in query_params:
         param_names = unquote(query_params["param-names"][0]).split(",")
         param_names = [pname for pname in param_names if pname]
@@ -171,7 +184,11 @@ def build_parallel_coordinate_plot_data(
     ]
 
 
-def build_importance_plot_data(study: Study, query_params: Dict[str, List[str]]) -> List[Dict]:
+def build_importance_plot_data(
+    study: Optional[Study], query_params: Dict[str, List[str]]
+) -> List[Dict]:
+    if study is None:
+        raise FileNotFoundError
     if "param-names" in query_params:
         param_names = unquote(query_params["param-names"][0]).split(",")
         param_names = [pname for pname in param_names if pname]

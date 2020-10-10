@@ -126,12 +126,13 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                         ).encode("utf-8")
                     elif data_type == "plot-data":
                         query_params = parse_qs(parsed_url.query)
-                        study_name = query_params.get(
-                            "study-name", None
-                        )
+                        study_name = query_params.get("study-name", None)
                         if isinstance(study_name, list):
                             study_name = study_name[0] if study_name else None
-                        study = self._study_cache.get_study(study_name)
+                        if study_name is None:
+                            optional_study: Optional[optuna.Study] = None
+                        else:
+                            optional_study = self._study_cache.get_study(study_name)
                         study_names: Optional[Union[str, List[str]]] = query_params.get(
                             "study-names", None
                         )
@@ -142,7 +143,7 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                         study_list = [
                             self._study_cache.get_study(sn, cache=False) for sn in study_names
                         ]
-                        plot_data = build_plot_data(study, study_list, query_params)
+                        plot_data = build_plot_data(optional_study, study_list, query_params)
                         buffer = json.dumps(plot_data).encode("utf-8")
                     else:
                         raise FileNotFoundError()
