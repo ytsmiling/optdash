@@ -9,7 +9,7 @@ function App() {
   const [study_name, setStudyName] = useState("");
   const [content_type, setContentType] = useState("study-list");
 
-  const [study_summaries, setStudySummaries] = useState([]);
+  const [study_summaries, setStudySummaries] = useState([] as Array<any>);
 
   useEffect(() => { fetch_data("/api/study-summaries", "", setStudySummaries, "study-summaries") }, []);
 

@@ -7,7 +7,7 @@ import HistoryPlot from './plots/history';
 import ParallelCoordinatePlot from './plots/parallel-coordinate';
 import ParameterImportancePlot from './plots/parameter-importance';
 
-function Content(props: { content_type: string, study_summaries: Array<any> }) {
+function Content(props: { content_type: string, study_summaries: Array<any>}) {
     if (props.content_type == "study-list") {
         return <StudyList study_summaries={props.study_summaries}/>
     } else if (props.content_type == "contour") {

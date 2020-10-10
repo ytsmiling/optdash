@@ -9,3 +9,11 @@
     color: white;
     padding-left: calc(10px + 2vh);
 }
+
+.header-content {
+    display: inline-block;
+}
+
+.header-title {
+    margin-right: calc(10px + 2vh);
+}
