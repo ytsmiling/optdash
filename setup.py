@@ -64,6 +64,7 @@ setup(
     install_requires=get_install_requires(),
     tests_require=get_tests_require(),
     extras_require=get_extras_require(),
+    package_data={"optdash": ["*/public/*"]},
     entry_points={
         "console_scripts": [
             "optdash = optdash.server:main",
