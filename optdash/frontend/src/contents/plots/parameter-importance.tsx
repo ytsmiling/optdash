@@ -4,7 +4,7 @@ import ElementSelection from '../inputs/element-selection';
 import fetch_data from "../../utils/fetch-data"
 import MultiElementSelection from '../inputs/multi-element-selection';
 
-function ParallelCoordinatePlot(props: { study_summaries: Array<any> }) {
+function ParameterImportancePlot(props: { study_summaries: Array<any> }) {
     const [plot_data, setPlotData] = useState([]);
     const [param_list, setParamList] = useState([] as string[]);
     const [study_name, setStudyName] = useState("");
@@ -30,7 +30,7 @@ function ParallelCoordinatePlot(props: { study_summaries: Array<any> }) {
         fetch_data(
             "/api/plot-data",
             [
-                ["type", "parallel-coordinate"],
+                ["type", "parameter-importance"],
                 ["study-name", study_name],
             ].concat(parameters.map((x) => ["param-names", x])),
             setPlotData,
@@ -48,7 +48,7 @@ function ParallelCoordinatePlot(props: { study_summaries: Array<any> }) {
                     {
                         width: width,
                         height: height,
-                        title: 'Parallel Coordinate Plot.',
+                        title: 'Parameter Importance.',
                     }
                 }
             />
@@ -56,4 +56,4 @@ function ParallelCoordinatePlot(props: { study_summaries: Array<any> }) {
     );
 }
 
-export default ParallelCoordinatePlot;
+export default ParameterImportancePlot;

@@ -178,11 +178,7 @@ def build_importance_plot_data(
 ) -> List[Dict]:
     if study is None:
         raise FileNotFoundError
-    if "param-names" in query_params:
-        param_names = unquote(query_params["param-names"][0]).split(",")
-        param_names = [pname for pname in param_names if pname]
-    else:
-        param_names = []
+    param_names = query_params["param-names"] if "param-names" in query_params else []
 
     importances = optuna.importance.get_param_importances(
         study, evaluator=None, params=param_names  # type: ignore
