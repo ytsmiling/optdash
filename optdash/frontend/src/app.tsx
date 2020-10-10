@@ -8,10 +8,8 @@ function App() {
   const [study_name, setStudyName] = useState("");
   const [plot_type, setPlotType] = useState("none");
 
-  const [study_names, setStudyNames] = useState([]);
   const [study_summaries, setStudySummaries] = useState([]);
 
-  useEffect(() => { fetch_data("/api/study-names", "", setStudyNames, "study-names") }, []);
   useEffect(() => { fetch_data("/api/study-summaries", "", setStudySummaries, "study-summaries") }, []);
 
   return (
@@ -24,7 +22,7 @@ function App() {
           <input list="study-name" id="study-name-choice" name="ice-cream-choice" />
 
           <datalist id="study-name">
-            {study_names.map((x) => <option value={x} />)}
+            {study_summaries.map((x) => <option value={x["name"]} />)}
           </datalist>
 
           <button onClick={

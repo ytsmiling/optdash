@@ -76,7 +76,6 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
             if pathname == "/":
                 pathname = "/index.html"
             try:
-                print(pathname.split("/"))
                 if pathname[1:] in self.public_contents:
                     with (folder / pathname[1:]).open("rb") as bf:
                         buffer = bf.read()
@@ -84,13 +83,7 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                     headers["Content-Length"] = f"{len(buffer)}"
                 elif len(pathname.split("/")) == 3 and pathname.split("/")[1] == "api":
                     data_type = pathname.split("/")[2]
-                    if data_type == "study-names":
-                        studies = self._study_cache.get_study_summary()
-                        study_names = {
-                            "study-names": [study.study_name for study in studies]
-                        }
-                        buffer = json.dumps(study_names).encode("utf-8")
-                    elif data_type == "study-summaries":
+                    if data_type == "study-summaries":
                         studies = self._study_cache.get_study_summary()
                         study_summaries = {
                             "study-summaries": [
