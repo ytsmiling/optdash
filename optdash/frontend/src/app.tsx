@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Header from './navs/header';
 import Sidebar from './navs/sidebar';
+import Content from './contents/content';
 import fetch_data from './utils/fetch-data';
 import './app.css';
 
 function App() {
   const [study_name, setStudyName] = useState("");
-  const [plot_type, setPlotType] = useState("none");
+  const [content_type, setContentType] = useState("study-list");
 
   const [study_summaries, setStudySummaries] = useState([]);
 
@@ -15,7 +16,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <Sidebar onclick_hook={(v: string) => { setPlotType(v); }} />
+      <Sidebar onclick_hook={(v: string) => { setContentType(v); }} />
       <div className="App-main">
         <div>
           <label htmlFor="study-name-choice">Study name: </label>
@@ -35,28 +36,7 @@ function App() {
           }>Use
           </button>
         </div>
-        <table className="studies">
-          <thead>
-            <tr>
-              <th>name</th>
-              <th>#trials</th>
-              <th>best</th>
-              <th>direction</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              study_summaries.map(
-                (x) => <tr>
-                  <th>{x["name"]}</th>
-                  <th>{x["num-trials"]}</th>
-                  <th>{x["best-value"]}</th>
-                  <th>{x["direction"]}</th>
-                </tr>
-              )
-            }
-          </tbody>
-        </table>
+        <Content content_type={content_type} study_summaries={study_summaries} />
       </div>
     </div>
   );

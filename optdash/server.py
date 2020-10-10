@@ -13,6 +13,8 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import Union
+from urllib.parse import parse_qs
 from urllib.parse import urlparse
 import webbrowser
 
@@ -38,11 +40,16 @@ class StudyCache:
             self.summary_cache = summary
             return summary
 
-    def get_study(self, study_name: str, cache: bool = True) -> optuna.study.Study:
+    def get_study(self, study_name: Optional[str], cache: bool = True) -> optuna.study.Study:
+        if study_name is None:
+            raise FileNotFoundError()
         with self.lock:
+            if study_name not in [study.study_name for study in self.get_study_summary()]:
+                raise FileNotFoundError
             if study_name not in self.study_cache:
                 study = optuna.load_study(
-                    study_name=study_name, storage=self.database_url,
+                    study_name=study_name,
+                    storage=self.database_url,
                 )
                 if cache:
                     self.study_cache = {study_name: study}
@@ -89,7 +96,9 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                             "study-summaries": [
                                 {
                                     "name": study.study_name,
-                                    "best-value": study.best_trial.value,
+                                    "best-value": study.best_trial.value
+                                    if study.best_trial
+                                    else None,
                                     "num-trials": study.n_trials,
                                     "direction": study.direction.name,
                                 }
@@ -97,6 +106,20 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                             ]
                         }
                         buffer = json.dumps(study_summaries).encode("utf-8")
+                    elif data_type == "parameters":
+                        study_name: Optional[Union[str, List[str]]] = parse_qs(
+                            parsed_url.query
+                        ).get("study-name", None)
+                        if isinstance(study_name, list):
+                            study_name = study_name[0] if study_name else None
+                        study = self._study_cache.get_study(study_name)
+                        parameter_names = set()
+                        for trial in study.trials:
+                            for param_name in trial.params.keys():
+                                parameter_names.add(param_name)
+                        buffer = json.dumps({"parameter-names": list(parameter_names)}).encode(
+                            "utf-8"
+                        )
                     else:
                         raise FileNotFoundError()
                     headers["Content-Type"] = "application/json"
@@ -177,10 +200,10 @@ class Server:
         self._database_url = database_url
 
     def serve(
-            self,
-            host: str = "localhost",
-            port: int = 8080,
-            browse: bool = False,
+        self,
+        host: str = "localhost",
+        port: int = 8080,
+        browse: bool = False,
     ) -> None:
         """Start a server at host:port and open in a web browser.
 

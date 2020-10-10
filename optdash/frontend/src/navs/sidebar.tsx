@@ -7,16 +7,13 @@ function Sidebar(props: any) {
       <div className="sidebar-background">
       </div>
       <div className="sidebar">
-        <a onClick={() => props.onclick_hook("contour")}>Contour
-          plot</a>
+        <a onClick={() => props.onclick_hook("study-list")}>Studies</a>
+        <a onClick={() => props.onclick_hook("contour")}>Contour plot</a>
         <a onClick={() => props.onclick_hook("edf")}>EDF</a>
-        <a onClick={() => props.onclick_hook("interm")}>Interm.
-          values</a>
+        <a onClick={() => props.onclick_hook("interm")}>Interm. values</a>
         <a onClick={() => props.onclick_hook("history")}>History</a>
-        <a onClick={() => props.onclick_hook("parallel")}>Parallel
-          coordinate</a>
-        <a onClick={() => props.onclick_hook("importance")}>Param
-          importance</a>
+        <a onClick={() => props.onclick_hook("parallel")}>Parallel coordinate</a>
+        <a onClick={() => props.onclick_hook("importance")}>Param importance</a>
       </div>
     </div>
   );
