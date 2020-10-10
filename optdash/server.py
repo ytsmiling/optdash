@@ -86,11 +86,24 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                     data_type = pathname.split("/")[2]
                     if data_type == "study-names":
                         studies = self._study_cache.get_study_summary()
-                        print(studies)
                         study_names = {
                             "study-names": [study.study_name for study in studies]
                         }
                         buffer = json.dumps(study_names).encode("utf-8")
+                    elif data_type == "study-summaries":
+                        studies = self._study_cache.get_study_summary()
+                        study_summaries = {
+                            "study-summaries": [
+                                {
+                                    "name": study.study_name,
+                                    "best-value": study.best_trial.value,
+                                    "num-trials": study.n_trials,
+                                    "direction": study.direction.name,
+                                }
+                                for study in studies
+                            ]
+                        }
+                        buffer = json.dumps(study_summaries).encode("utf-8")
                     else:
                         raise FileNotFoundError()
                     headers["Content-Type"] = "application/json"
@@ -171,10 +184,10 @@ class Server:
         self._database_url = database_url
 
     def serve(
-        self,
-        host: str = "localhost",
-        port: int = 8080,
-        browse: bool = False,
+            self,
+            host: str = "localhost",
+            port: int = 8080,
+            browse: bool = False,
     ) -> None:
         """Start a server at host:port and open in a web browser.
 

@@ -4,12 +4,17 @@
 
 .App-main {
     margin-top: 2vh;
-    margin-left: 2vw;
+    margin-left: 15vw;
 }
 
 .App-logo {
     height: 40vmin;
     pointer-events: none;
+}
+
+.studies {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -9,8 +9,10 @@ function App() {
   const [plot_type, setPlotType] = useState("none");
 
   const [study_names, setStudyNames] = useState([]);
+  const [study_summaries, setStudySummaries] = useState([]);
 
   useEffect(() => { fetch_data("/api/study-names", "", setStudyNames, "study-names") }, []);
+  useEffect(() => { fetch_data("/api/study-summaries", "", setStudySummaries, "study-summaries") }, []);
 
   return (
     <div className="App">
@@ -35,6 +37,28 @@ function App() {
           }>Use
           </button>
         </div>
+        <table className="studies">
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>#trials</th>
+              <th>best</th>
+              <th>direction</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              study_summaries.map(
+                (x) => <tr>
+                  <th>{x["name"]}</th>
+                  <th>{x["num-trials"]}</th>
+                  <th>{x["best-value"]}</th>
+                  <th>{x["direction"]}</th>
+                </tr>
+              )
+            }
+          </tbody>
+        </table>
       </div>
     </div>
   );
