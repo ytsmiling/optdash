@@ -1,6 +1,7 @@
 import argparse
 from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer
+import json
 import logging
 from pathlib import Path
 from socketserver import ThreadingMixIn
@@ -15,13 +16,42 @@ from typing import Tuple
 from urllib.parse import urlparse
 import webbrowser
 
-from optdash.version import __version__
+import optuna
 
+from optdash.version import __version__
 
 __all__: List[str] = []
 
 
-def create_request_handler_class() -> type:
+class StudyCache:
+    def __init__(self, database_url: str) -> None:
+        self.lock = threading.Lock()
+        self.study_cache: Dict[str, optuna.Study] = {}
+        self.summary_cache: Optional[List[optuna.study.StudySummary]] = None
+        self.database_url = database_url
+
+    def get_study_summary(self) -> List[optuna.study.StudySummary]:
+        with self.lock:
+            if self.summary_cache is not None:
+                return self.summary_cache
+            summary = optuna.get_all_study_summaries(storage=self.database_url)
+            self.summary_cache = summary
+            return summary
+
+    def get_study(self, study_name: str, cache: bool = True) -> optuna.study.Study:
+        with self.lock:
+            if study_name not in self.study_cache:
+                study = optuna.load_study(
+                    study_name=study_name, storage=self.database_url,
+                )
+                if cache:
+                    self.study_cache = {study_name: study}
+                else:
+                    return study
+            return self.study_cache[study_name]
+
+
+def create_request_handler_class(study_cache: StudyCache) -> type:
     class HTTPRequestHandler(BaseHTTPRequestHandler):
         public_contents = {
             "index.html",
@@ -35,6 +65,7 @@ def create_request_handler_class() -> type:
             "js": "text/javascript",
             "json": "application/json",
         }
+        _study_cache = study_cache
 
         def get_contents(self) -> Tuple[int, Dict[str, str], Optional[bytes]]:
             parsed_url = urlparse(self.path)
@@ -44,13 +75,30 @@ def create_request_handler_class() -> type:
             buffer: Optional[bytes] = None
             if pathname == "/":
                 pathname = "/index.html"
-            if pathname[1:] in self.public_contents:
-                with (folder / pathname[1:]).open("rb") as bf:
-                    buffer = bf.read()
-                headers["Content-Type"] = self.content_type[pathname.split(".")[-1]]
-                headers["Content-Length"] = f"{len(buffer)}"
+            try:
+                print(pathname.split("/"))
+                if pathname[1:] in self.public_contents:
+                    with (folder / pathname[1:]).open("rb") as bf:
+                        buffer = bf.read()
+                    headers["Content-Type"] = self.content_type[pathname.split(".")[-1]]
+                    headers["Content-Length"] = f"{len(buffer)}"
+                elif len(pathname.split("/")) == 3 and pathname.split("/")[1] == "api":
+                    data_type = pathname.split("/")[2]
+                    if data_type == "study-names":
+                        studies = self._study_cache.get_study_summary()
+                        print(studies)
+                        study_names = {
+                            "study-names": [study.study_name for study in studies]
+                        }
+                        buffer = json.dumps(study_names).encode("utf-8")
+                    else:
+                        raise FileNotFoundError()
+                    headers["Content-Type"] = "application/json"
+                    headers["Content-Length"] = f"{len(buffer)}"
+                else:
+                    raise FileNotFoundError()
                 status_code = 200
-            else:
+            except FileNotFoundError:
                 status_code = 404
             return status_code, headers, buffer
 
@@ -84,12 +132,13 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 
 class HTTPServerThread(threading.Thread):
-    def __init__(self, host: str, port: int, url: str) -> None:
+    def __init__(self, host: str, port: int, url: str, database_url: str) -> None:
         super(HTTPServerThread, self).__init__(daemon=True)
         self.url = url
         self.port = port
         self.host = host
-        self.server = ThreadedHTTPServer((host, port), create_request_handler_class())
+        study_cache = StudyCache(database_url)
+        self.server = ThreadedHTTPServer((host, port), create_request_handler_class(study_cache))
         self.server.timeout = 0.25
         self.terminate_event = threading.Event()
         self.terminate_event.set()
@@ -117,8 +166,9 @@ class HTTPServerThread(threading.Thread):
 
 
 class Server:
-    def __init__(self) -> None:
+    def __init__(self, database_url: str) -> None:
         self._thread_list: List = []
+        self._database_url = database_url
 
     def serve(
         self,
@@ -138,7 +188,7 @@ class Server:
         url = f"http://{host}:{port}"
 
         self._thread_list = [thread for thread in self._thread_list if thread.alive()]
-        thread = HTTPServerThread(host, port, url)
+        thread = HTTPServerThread(host, port, url, self._database_url)
         thread.start()
         while not thread.alive():
             time.sleep(10)
@@ -177,6 +227,7 @@ class Server:
 def main() -> None:
     parser = argparse.ArgumentParser(description="A third-party dashboard for optuna.")
     parser.add_argument("--version", help="print version", action="store_true")
+    parser.add_argument("db", help="database url of optuna", nargs="?", type=str)
     parser.add_argument("--browse", help="launch web browser", action="store_true")
     parser.add_argument("--port", help="port to serve (default: 8080)", type=int, default=8080)
     parser.add_argument("--host", help="host to serve (default: 'localhost')", default="localhost")
@@ -194,7 +245,11 @@ def main() -> None:
         print(__version__)
         sys.exit(0)
 
-    server = Server()
+    if args.db is None:
+        sys.stderr.write("Usage Error: Specify database to connect.")
+        sys.exit(1)
+
+    server = Server(args.db)
     server.serve(browse=args.browse, port=args.port, host=args.host)
     server.wait()
     sys.exit(0)
