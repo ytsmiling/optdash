@@ -40,7 +40,7 @@ def get_tests_require() -> List[str]:
 
 def get_extras_require() -> Dict[str, List[str]]:
 
-    requirements = {
+    requirements: Dict[str, List[str]] = {
         "checking": ["black", "mypy", "flake8"],
         "doc": ["sphinx", "sphinx_rtd_theme"],
         "mysql": [],
@@ -64,4 +64,9 @@ setup(
     install_requires=get_install_requires(),
     tests_require=get_tests_require(),
     extras_require=get_extras_require(),
+    entry_points={
+        "console_scripts": [
+            "optdash = optdash.server:main",
+        ],
+    },
 )
