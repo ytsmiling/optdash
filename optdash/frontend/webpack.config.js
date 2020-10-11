@@ -5,7 +5,7 @@ var APP_DIR = path.resolve(__dirname, 'src');
 module.exports = {
     entry: APP_DIR + '/index.tsx',
     output: { path: __dirname + "/public", filename: 'bundle.js' },
-    mode: "development",
+    mode: "production",
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".json", ".css"],
     },
