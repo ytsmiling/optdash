@@ -10,6 +10,7 @@ function StudyList(props: { study_summaries: Array<any> }) {
                     <th>#trials</th>
                     <th>best</th>
                     <th>direction</th>
+                    <th>start time</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,6 +21,7 @@ function StudyList(props: { study_summaries: Array<any> }) {
                             <td>{x["num-trials"]}</td>
                             <td>{x["best-value"]}</td>
                             <td>{x["direction"]}</td>
+                            <td>{x["datetime-start"]}</td>
                         </tr>
                     )
                 }

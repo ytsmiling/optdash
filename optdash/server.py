@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer
 import json
@@ -69,8 +70,16 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                                     else None,
                                     "num-trials": study.n_trials,
                                     "direction": study.direction.name,
+                                    "datetime-start": (
+                                        study.datetime_start.isoformat()
+                                        if study.datetime_start is not None else ""
+                                    ),
                                 }
-                                for study in sorted(studies, key=lambda s: s.study_name)
+                                for study in sorted(
+                                    studies, key=lambda s: (
+                                        s.datetime_start if s.datetime_start is None else datetime.now()
+                                    )
+                                )
                             ]
                         }
                         buffer = json.dumps(study_summaries).encode("utf-8")
