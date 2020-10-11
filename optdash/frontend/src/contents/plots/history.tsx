@@ -42,7 +42,7 @@ function HistoryPlot(
                         width: props.width,
                         height: props.height,
                         title: 'History.',
-                        xaxis: { title: "Step" },
+                        xaxis: { title: "Trial Number" },
                         yaxis: { title: "Value" },
                     }
                 }
