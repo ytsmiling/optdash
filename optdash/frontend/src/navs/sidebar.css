@@ -1,6 +1,6 @@
 .sidebar {
     height: 100vh;
-    width: 15vw;
+    width: 12vw;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -8,6 +8,7 @@
     background-color: #111;
     overflow-x: hidden;
     margin-top: 15vh;
+    margin-left: 3vh;
 }
 
 .sidebar-background {

@@ -45,8 +45,10 @@ function ParameterImportancePlot(
 
     return (
         <div>
-            <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} default_value={study_name} />
-            <MultiElementSelection candidates={param_list} display_name="Parameter" setter={setParameters} current_values={parameters} />
+            <div className="param-selector">
+                <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} default_value={study_name} />
+                <MultiElementSelection candidates={param_list} display_name="Parameter" setter={setParameters} current_values={parameters} />
+            </div>
 
             <Plot
                 data={plot_data}

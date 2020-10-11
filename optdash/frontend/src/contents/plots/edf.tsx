@@ -30,7 +30,9 @@ function EdfPlot(
 
     return (
         <div>
-            <MultiElementSelection candidates={study_name_candidates} display_name="Study Name" current_values={study_names} setter={setStudyNames} />
+            <div className="param-selector">
+                <MultiElementSelection candidates={study_name_candidates} display_name="Study Name" current_values={study_names} setter={setStudyNames} />
+            </div>
 
             <Plot
                 data={plot_data}

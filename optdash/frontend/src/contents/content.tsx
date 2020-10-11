@@ -7,6 +7,7 @@ import HistoryPlot from './plots/history';
 import ParallelCoordinatePlot from './plots/parallel-coordinate';
 import ParameterImportancePlot from './plots/parameter-importance';
 import fetch_data from "../utils/fetch-data";
+import "./content.css"
 
 function Content(
     props: {
@@ -16,7 +17,7 @@ function Content(
 ) {
     const [study_name, setStudyName] = useState("");
     const [param_list, setParamList] = useState([]);
-    const height: number = Math.min(window.innerWidth * 0.8 * 0.7, window.innerHeight * 0.8);
+    const height: number = Math.min(window.innerWidth * 0.8 * 0.7, window.innerHeight * 0.7);
     const width: number = height / 0.8;
 
     useEffect(() => {

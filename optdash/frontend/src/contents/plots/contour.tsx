@@ -47,9 +47,11 @@ function ContourPlot(
 
     return (
         <div>
-            <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} default_value={study_name} />
-            <ElementSelection candidates={param_list} display_name="Parameter-X" setter={setParamX} default_value={""} />
-            <ElementSelection candidates={param_list} display_name="Parameter-Y" setter={setParamY} default_value={""} />
+            <div className="param-selector">
+                <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} default_value={study_name} />
+                <ElementSelection candidates={param_list} display_name="Parameter-X" setter={setParamX} default_value={""} />
+                <ElementSelection candidates={param_list} display_name="Parameter-Y" setter={setParamY} default_value={""} />
+            </div>
 
             <Plot
                 data={plot_data}

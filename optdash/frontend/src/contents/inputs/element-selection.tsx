@@ -14,7 +14,7 @@ function ElementSelection(props: { candidates: string[], display_name: string, s
   return (
     <div>
       <label htmlFor={selector_id}>{display_name}: </label>
-      <input list={display_name} id={selector_id} name={selector_id} value={default_value} onChange={(e) => { setDefaultValue(e.target.value); }} />
+      <input type="text" list={display_name} id={selector_id} name={selector_id} value={default_value} onChange={(e) => { setDefaultValue(e.target.value); }} />
       <datalist id={display_name}>
         {props.candidates.map((x) => <option value={x} />)}
       </datalist>

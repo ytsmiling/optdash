@@ -1,37 +1,17 @@
 .App {
-    text-align: center;
+    text-align: left;
 }
 
 .App-main {
-    margin-top: 2vh;
-    margin-left: 15vw;
+    font-size: calc(10px + 1vmin);
+    padding-left: 20vw;
+    padding-top: 5vh;
 }
 
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.App-main input[type="text"] {
+    font-size: calc(8px + 1vmin);
 }
 
-.studies {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.App-main button {
+    font-size: calc(8px + 1vmin);
 }

@@ -14,6 +14,7 @@ function MultiElementSelection(
                             <label htmlFor={selector_id + idx.toString()}>{display_name}: </label>
 
                             <input
+                                type="text"
                                 list={display_name + idx.toString()}
                                 id={selector_id + idx.toString()}
                                 name={selector_id + idx.toString()} />

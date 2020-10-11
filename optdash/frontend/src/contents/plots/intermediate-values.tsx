@@ -32,7 +32,9 @@ function InterMediatePlot(
 
     return (
         <div>
-            <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} default_value={study_name} />
+            <div className="param-selector">
+                <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} default_value={study_name} />
+            </div>
 
             <Plot
                 data={plot_data}
