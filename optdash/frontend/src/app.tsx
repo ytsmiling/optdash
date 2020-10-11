@@ -18,7 +18,7 @@ function App() {
       <Header />
       <Sidebar onclick_hook={(v: string) => { setContentType(v); }} />
       <div className="App-main">
-        <Content content_type={content_type} study_summaries={study_summaries} />
+        <Content content_type={content_type} study_summaries={study_summaries}/>
       </div>
     </div>
   );

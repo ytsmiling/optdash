@@ -4,10 +4,17 @@ import ElementSelection from '../inputs/element-selection';
 import fetch_data from "../../utils/fetch-data"
 import MultiElementSelection from '../inputs/multi-element-selection';
 
-function ParallelCoordinatePlot(props: { study_summaries: Array<any> }) {
+function ParallelCoordinatePlot(
+    props: {
+        study_summaries: Array<any>,
+        study_name: string,
+        setStudyName: (x: string) => void,
+    }
+) {
     const [plot_data, setPlotData] = useState([]);
     const [param_list, setParamList] = useState([] as string[]);
-    const [study_name, setStudyName] = useState("");
+    const study_name = props.study_name;
+    const setStudyName = props.setStudyName;
     const [parameters, setParameters] = useState([] as string[]);
 
     let width: number = window.innerWidth * 0.8;
@@ -39,7 +46,7 @@ function ParallelCoordinatePlot(props: { study_summaries: Array<any> }) {
 
     return (
         <div>
-            <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} />
+            <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} default_value={study_name} />
             <MultiElementSelection candidates={param_list} display_name="Parameter" setter={setParameters} current_values={parameters} />
 
             <Plot

@@ -3,12 +3,20 @@ import Plot from "react-plotly.js";
 import ElementSelection from '../inputs/element-selection';
 import fetch_data from "../../utils/fetch-data"
 
-function ContourPlot(props: { study_summaries: Array<any>}) {
+function ContourPlot(
+    props: {
+        study_summaries: Array<any>,
+        study_name: string,
+        setStudyName: (x: string) => void,
+    }
+) {
     const [plot_data, setPlotData] = useState([]);
     const [param_list, setParamList] = useState([]);
-    const [study_name, setStudyName] = useState("");
     const [param_x, setParamX] = useState("");
     const [param_y, setParamY] = useState("");
+
+    const study_name = props.study_name;
+    const setStudyName = props.setStudyName;
 
     let width: number = window.innerWidth * 0.8;
     let height: number = width * 0.7;
@@ -41,9 +49,9 @@ function ContourPlot(props: { study_summaries: Array<any>}) {
 
     return (
         <div>
-            <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} />
-            <ElementSelection candidates={param_list} display_name="Parameter-X" setter={setParamX} />
-            <ElementSelection candidates={param_list} display_name="Parameter-Y" setter={setParamY} />
+            <ElementSelection candidates={study_names} display_name="Study Name" setter={setStudyName} default_value={study_name} />
+            <ElementSelection candidates={param_list} display_name="Parameter-X" setter={setParamX} default_value={""} />
+            <ElementSelection candidates={param_list} display_name="Parameter-Y" setter={setParamY} default_value={""} />
 
             <Plot
                 data={plot_data}
