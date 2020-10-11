@@ -3,12 +3,15 @@ import Plot from "react-plotly.js";
 import MultiElementSelection from '../inputs/multi-element-selection';
 import fetch_data from "../../utils/fetch-data"
 
-function EdfPlot(props: { study_summaries: Array<any>}) {
+function EdfPlot(
+    props: {
+        study_summaries: Array<any>
+        height: number,
+        width: number,
+    }
+) {
     const [plot_data, setPlotData] = useState([]);
     const [study_names, setStudyNames] = useState([] as string[]);
-
-    let width: number = window.innerWidth * 0.8;
-    let height: number = width * 0.7;
 
     let study_name_candidates = props.study_summaries.map((x) => x["name"]);
 
@@ -33,8 +36,8 @@ function EdfPlot(props: { study_summaries: Array<any>}) {
                 data={plot_data}
                 layout={
                     {
-                        width: width,
-                        height: height,
+                        width: props.width,
+                        height: props.height,
                         title: 'EDF.',
                     }
                 }

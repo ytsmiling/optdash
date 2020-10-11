@@ -8,18 +8,16 @@ function ContourPlot(
         study_summaries: Array<any>,
         study_name: string,
         setStudyName: (x: string) => void,
+        height: number,
+        width: number,
     }
 ) {
     const [plot_data, setPlotData] = useState([]);
     const [param_list, setParamList] = useState([]);
     const [param_x, setParamX] = useState("");
     const [param_y, setParamY] = useState("");
-
     const study_name = props.study_name;
     const setStudyName = props.setStudyName;
-
-    let width: number = window.innerWidth * 0.8;
-    let height: number = width * 0.7;
 
     useEffect(() => {
         if (study_name == "") { return }
@@ -57,8 +55,8 @@ function ContourPlot(
                 data={plot_data}
                 layout={
                     {
-                        width: width,
-                        height: height,
+                        width: props.width,
+                        height: props.height,
                         title: 'A Contour Plot.',
                         xaxis: { title: param_x },
                         yaxis: { title: param_y },

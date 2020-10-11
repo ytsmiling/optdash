@@ -6,10 +6,10 @@ import fetch_data from './utils/fetch-data';
 import './app.css';
 
 function App() {
-  const [study_name, setStudyName] = useState("");
   const [content_type, setContentType] = useState("study-list");
-
   const [study_summaries, setStudySummaries] = useState([] as Array<any>);
+  const height: number = Math.min(window.innerWidth * 0.8 * 0.7, window.innerHeight * 0.8);
+  const width: number = height / 0.8;
 
   useEffect(() => { fetch_data("/api/study-summaries", "", setStudySummaries, "study-summaries") }, []);
 
