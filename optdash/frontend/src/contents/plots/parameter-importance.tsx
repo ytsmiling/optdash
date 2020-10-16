@@ -23,7 +23,7 @@ function ParameterImportancePlot(
     let study_names = props.study_summaries.map((x) => x["name"]);
 
     useEffect(() => {
-        if (!study_names.includes(study_name) || parameters.length == 0 || !parameters.every((x) => param_list.includes(x))) { return }
+        if (!study_names.includes(study_name) || parameters.length === 0 || !parameters.every((x) => param_list.includes(x))) { return }
         fetch_data(
             "/api/plot-data",
             [
@@ -32,7 +32,7 @@ function ParameterImportancePlot(
             ].concat(parameters.map((x) => ["param-names", x])),
             setPlotData,
         );
-    }, [study_name, parameters]);
+    }, [study_name, study_names, parameters, param_list]);
 
     return (
         <div>
