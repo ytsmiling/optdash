@@ -11,10 +11,11 @@ function ParallelCoordinatePlot(
         setStudyName: (x: string) => void,
         height: number,
         width: number,
+        parameters: any,
     }
 ) {
     const [plot_data, setPlotData] = useState([]);
-    const [param_list, setParamList] = useState([] as string[]);
+    const param_list = props.parameters["parameter-names"];
     const study_name = props.study_name;
     const setStudyName = props.setStudyName;
     const [parameters, setParameters] = useState([] as string[]);
@@ -22,17 +23,7 @@ function ParallelCoordinatePlot(
     let study_names = props.study_summaries.map((x) => x["name"]);
 
     useEffect(() => {
-        if (study_name == "") { return }
-        fetch_data(
-            "/api/parameters",
-            [["study-name", study_name]],
-            setParamList,
-            "parameter-names",
-        );
-    }, [study_name]);
-
-    useEffect(() => {
-        if (!study_names.includes(study_name) || parameters.length == 0 || !parameters.every((x) => param_list.includes(x))) { return }
+        if (!study_names.includes(study_name) || parameters.length === 0 || !parameters.every((x) => param_list.includes(x))) { return }
         fetch_data(
             "/api/plot-data",
             [
@@ -41,7 +32,7 @@ function ParallelCoordinatePlot(
             ].concat(parameters.map((x) => ["param-names", x])),
             setPlotData,
         );
-    }, [study_name, parameters]);
+    }, [study_name, study_names, parameters, param_list]);
 
     return (
         <div>

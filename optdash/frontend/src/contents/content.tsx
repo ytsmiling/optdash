@@ -16,37 +16,41 @@ function Content(
     },
 ) {
     const [study_name, setStudyName] = useState("");
-    const [param_list, setParamList] = useState([]);
+    const [parameters, setParameters] = useState(
+        {
+            "parameter-names": [], "distributions": {}
+        } as any
+    );
     const height: number = Math.min(window.innerWidth * 0.8 * 0.7, window.innerHeight * 0.7);
     const width: number = height / 0.8;
 
     useEffect(() => {
-        if (study_name == "") { return }
+        if (study_name === "") { return }
         fetch_data(
             "/api/parameters",
             [["study-name", study_name]],
-            setParamList,
-            "parameter-names",
+            setParameters,
         );
     }, [study_name]);
 
-    if (props.content_type == "study-list") {
+    if (props.content_type === "study-list") {
         return <StudyList study_summaries={props.study_summaries} />
-    } else if (props.content_type == "contour") {
+    } else if (props.content_type === "contour") {
         return <Contour
             study_summaries={props.study_summaries}
             study_name={study_name}
             setStudyName={setStudyName}
             height={height}
             width={width}
+            parameters={parameters}
         />
-    } else if (props.content_type == "edf") {
+    } else if (props.content_type === "edf") {
         return <EdfPlot
             study_summaries={props.study_summaries}
             height={height}
             width={width}
         />
-    } else if (props.content_type == "interm") {
+    } else if (props.content_type === "interm") {
         return <InterMediatePlot
             study_summaries={props.study_summaries}
             study_name={study_name}
@@ -54,7 +58,7 @@ function Content(
             height={height}
             width={width}
         />
-    } else if (props.content_type == "history") {
+    } else if (props.content_type === "history") {
         return <HistoryPlot
             study_summaries={props.study_summaries}
             study_name={study_name}
@@ -62,21 +66,23 @@ function Content(
             height={height}
             width={width}
         />
-    } else if (props.content_type == "parallel") {
+    } else if (props.content_type === "parallel") {
         return <ParallelCoordinatePlot
             study_summaries={props.study_summaries}
             study_name={study_name}
             setStudyName={setStudyName}
             height={height}
             width={width}
+            parameters={parameters}
         />
-    } else if (props.content_type == "importance") {
+    } else if (props.content_type === "importance") {
         return <ParameterImportancePlot
             study_summaries={props.study_summaries}
             study_name={study_name}
             setStudyName={setStudyName}
             height={height}
             width={width}
+            parameters={parameters}
         />
     } else {
         return <div />
