@@ -28,8 +28,10 @@ function MultiElementSelection(
                                 let input_element = document.getElementById(
                                     selector_id + idx.toString()
                                 ) as HTMLInputElement;
-                                new_candidates[idx] = input_element.value;
-                                props.setter(new_candidates);
+                                if (props.candidates.includes(input_element.value)) {
+                                    new_candidates[idx] = input_element.value;
+                                    props.setter(new_candidates);
+                                }
                             }}>Use</button>
                         </div>
                     )

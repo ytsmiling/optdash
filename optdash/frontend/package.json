@@ -11,7 +11,7 @@
         "react-scripts": "^3.4.3"
     },
     "scripts": {
-        "build": "webpack --config webpack.config.js",
+        "build": "webpack --config webpack.config.js --display-modules",
         "dev-build": "webpack --config webpack.config.js --mode development"
     },
     "eslintConfig": {

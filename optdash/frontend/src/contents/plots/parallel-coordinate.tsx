@@ -20,9 +20,8 @@ function ParallelCoordinatePlot(
     const setStudyName = props.setStudyName;
     const [parameters, setParameters] = useState([] as string[]);
 
-    let study_names = props.study_summaries.map((x) => x["name"]);
-
     useEffect(() => {
+        let study_names = props.study_summaries.map((x) => x["name"]);
         if (!study_names.includes(study_name) || parameters.length === 0 || !parameters.every((x) => param_list.includes(x))) { return }
         fetch_data(
             "/api/plot-data",
@@ -32,7 +31,9 @@ function ParallelCoordinatePlot(
             ].concat(parameters.map((x) => ["param-names", x])),
             setPlotData,
         );
-    }, [study_name, study_names, parameters, param_list]);
+    }, [props.study_name, props.study_summaries, parameters, props.parameters]);
+
+    let study_names = props.study_summaries.map((x) => x["name"]);
 
     return (
         <div>

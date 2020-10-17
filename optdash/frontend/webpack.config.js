@@ -6,6 +6,7 @@ module.exports = {
     entry: APP_DIR + '/index.tsx',
     output: { path: __dirname + "/public", filename: 'bundle.js' },
     mode: "production",
+    stats: "verbose",
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".json", ".css"],
     },
