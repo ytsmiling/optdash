@@ -19,6 +19,10 @@ from urllib.parse import parse_qs
 from urllib.parse import urlparse
 import webbrowser
 
+from optuna.distributions import CategoricalDistribution
+from optuna.distributions import LogUniformDistribution
+from optuna.distributions import IntLogUniformDistribution
+
 from optdash.plot_data import build_plot_data
 from optdash.study import Study
 from optdash.study import StudyCache
@@ -94,8 +98,27 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                         for trial in study.trials:
                             for param_name in trial.params.keys():
                                 parameter_names.add(param_name)
+                        distributions = {}
+                        for trial in study.trials:
+                            for param_name, distribution in trial.distributions.items():
+                                distributions[param_name] = distribution
                         buffer = json.dumps(
-                            {"parameter-names": list(sorted(parameter_names))}
+                            {
+                                "parameter-names": list(sorted(parameter_names)),
+                                "distributions": {
+                                    param_name: {
+                                        "categorical": isinstance(
+                                            distribution, CategoricalDistribution
+                                        ),
+                                        "log": isinstance(
+                                            distribution, LogUniformDistribution
+                                        ) or isinstance(
+                                            distribution, IntLogUniformDistribution
+                                        ),
+                                    }
+                                    for param_name, distribution in distributions.items()
+                                }
+                            }
                         ).encode("utf-8")
                     elif data_type == "plot-data":
                         query_params = parse_qs(parsed_url.query)
