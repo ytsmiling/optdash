@@ -49,6 +49,8 @@ function ParameterImportancePlot(
                         width: props.width,
                         height: props.height,
                         title: 'Parameter Importance.',
+                        xaxis: {title: 'Improtance'},
+                        yaxis: {title: 'Parameter name'},
                     }
                 }
             />
