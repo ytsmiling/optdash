@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import StudyList from './study-list';
+import StudyList from './tables/study-list';
 import Contour from './plots/contour';
 import EdfPlot from './plots/edf';
 import InterMediatePlot from './plots/intermediate-values';
@@ -8,6 +8,8 @@ import ParallelCoordinatePlot from './plots/parallel-coordinate';
 import ParameterImportancePlot from './plots/parameter-importance';
 import fetch_data from "../utils/fetch-data";
 import "./content.css"
+import Study from "./tables/study";
+import Trial from "./tables/trial";
 
 function Content(
     props: {
@@ -35,6 +37,18 @@ function Content(
 
     if (props.content_type === "study-list") {
         return <StudyList study_summaries={props.study_summaries} />
+    } else if (props.content_type === "study") {
+        return <Study
+            study_summaries={props.study_summaries}
+            study_name={study_name}
+            setStudyName={setStudyName}
+        />
+    } else if (props.content_type === "trial") {
+        return <Trial
+          study_summaries={props.study_summaries}
+          study_name={study_name}
+          setStudyName={setStudyName}
+        />
     } else if (props.content_type === "contour") {
         return <Contour
             study_summaries={props.study_summaries}

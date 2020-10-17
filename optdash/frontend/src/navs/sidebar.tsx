@@ -8,6 +8,8 @@ function Sidebar(props: any) {
       </div>
       <div className="sidebar">
         <a onClick={() => props.onclick_hook("study-list")}>Study list</a>
+        <a onClick={() => props.onclick_hook("study")}>Study</a>
+        <a onClick={() => props.onclick_hook("trial")}>Trial</a>
         <a onClick={() => props.onclick_hook("contour")}>Contour plot</a>
         <a onClick={() => props.onclick_hook("edf")}>EDF</a>
         <a onClick={() => props.onclick_hook("interm")}>Interm. values</a>

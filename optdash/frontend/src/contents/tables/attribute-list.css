@@ -1,0 +1,16 @@
+.attribute-list {
+    font-size: calc(10px + 1vmin);
+    background-color: black;
+}
+
+.attribute-list th {
+    padding-left: calc(5px + 1vmin);
+    padding-right: calc(5px + 1vmin);
+    background-color: mintcream;
+}
+
+.attribute-list td {
+    padding-left: calc(5px + 1vmin);
+    padding-right: calc(5px + 1vmin);
+    background-color: whitesmoke;
+}

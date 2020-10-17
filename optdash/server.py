@@ -87,6 +87,71 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                             ]
                         }
                         buffer = json.dumps(study_summaries).encode("utf-8")
+                    elif data_type == "study":
+                        query_params = parse_qs(parsed_url.query)
+                        study_names = query_params.get("study-name", [])
+                        if study_names:
+                            study_name = study_names[0]
+                        else:
+                            raise FileNotFoundError
+                        study = study_cache.get_study(study_name)
+                        buffer = json.dumps(
+                            {
+                                "name": study.study_name,
+                                "best-value": study.best_trial.value
+                                if study.best_trial
+                                else None,
+                                "num-trials": len(study.trials),
+                                "direction": study.direction.name,
+                                "datetime-start": (
+                                    min(t.datetime_start for t in study.trials).isoformat()
+                                    if study.trials else ""
+                                ),
+                                "user-attributes": [
+                                    {"key": key, "value": value}
+                                    for key, value in study.user_attrs.items()
+                                ],
+                                "system-attributes": [
+                                    {"key": key, "value": value}
+                                    for key, value in study.system_attrs.items()
+                                ],
+                            }
+                        ).encode("utf-8")
+                    elif data_type == "trial":
+                        query_params = parse_qs(parsed_url.query)
+                        study_names = query_params.get("study-name", [])
+                        if study_names:
+                            study_name = study_names[0]
+                        else:
+                            raise FileNotFoundError
+                        trial_numbers = query_params.get("trial-number", [])
+                        if trial_numbers:
+                            trial_number = int(trial_numbers[0])
+                        else:
+                            raise FileNotFoundError
+                        study = study_cache.get_study(study_name)
+                        if int(trial_number) > len(study.trials):
+                            raise FileNotFoundError
+                        trial = study.trials[trial_number]
+                        buffer = json.dumps(
+                            {
+                                "number": trial.number,
+                                "value": trial.value,
+                                "datetime-start": trial.datetime_start.isoformat(),
+                                "parameters": [
+                                    {"key": key, "value": value}
+                                    for key, value in trial.params.items()
+                                ],
+                                "user-attributes": [
+                                    {"key": key, "value": value}
+                                    for key, value in trial.user_attrs.items()
+                                ],
+                                "system-attributes": [
+                                    {"key": key, "value": value}
+                                    for key, value in trial.system_attrs.items()
+                                ],
+                            }
+                        ).encode("utf-8")
                     elif data_type == "parameters":
                         study_name: Optional[Union[str, List[str]]] = parse_qs(
                             parsed_url.query
@@ -221,10 +286,10 @@ class Server:
         self._database_url = database_url
 
     def serve(
-        self,
-        host: str = "localhost",
-        port: int = 8080,
-        browse: bool = False,
+            self,
+            host: str = "localhost",
+            port: int = 8080,
+            browse: bool = False,
     ) -> None:
         """Start a server at host:port and open in a web browser.
 
