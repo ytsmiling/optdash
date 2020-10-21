@@ -1,6 +1,6 @@
 # optdash
 
-**Optdash** s a third-party dashboard for optuna.
+**Optdash** is a third-party dashboard for optuna.
 
 ## Key features
 
