@@ -2,6 +2,8 @@
 
 **Optdash** is a third-party dashboard for optuna.
 
+![README GIF](docs/images/optdash-readme.gif)
+
 ## Key features
 
 * Simple usage
