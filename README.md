@@ -1,7 +1,16 @@
 # optdash
 A third-party dashboard for optuna.
 
-## Install from source
+## Install
+
+### pypi
+
+```shell script
+pip install optdash
+```
+
+
+### Install from source
 
 ```shell script
 cd optdash/frontend
