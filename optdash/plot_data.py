@@ -49,7 +49,14 @@ def build_contour_plot_data(
             y=[trial.params[param_y] for trial in trials],
             z=[trial.value for trial in trials],
             type="contour",
-        )
+        ),
+        dict(
+            x=[trial.params[param_x] for trial in trials],
+            y=[trial.params[param_y] for trial in trials],
+            type="scatter",
+            mode="markers",
+            marker=dict(color='rgb(100, 100, 100)'),
+        ),
     ]
 
 
