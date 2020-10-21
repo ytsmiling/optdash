@@ -1,16 +1,33 @@
 # optdash
-A third-party dashboard for optuna.
+
+**Optdash** s a third-party dashboard for optuna.
+
+## Key features
+
+* Simple usage
+* Interactive visualization
+* Minimal dependencies
+    * Optdash depends solely on Optuna (and sklearn, which is an optional depedency of optuna).
+
+
+## Quick start
+
+```shell script
+optdash your/db/url
+```
+
+The db url is the same with optuna, whose format follows [RFC-1738](https://tools.ietf.org/html/rfc1738.html).
 
 ## Install
 
-### pypi
+### From pypi
 
 ```shell script
 pip install optdash
 ```
 
 
-### Install from source
+### From source
 
 ```shell script
 cd optdash/frontend
