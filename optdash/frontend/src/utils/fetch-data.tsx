@@ -1,6 +1,6 @@
 function fetch_data(base_uri: string, query_params: string | string[][], data_setter: (x: any) => void, key: string = "") {
     let qs = new URLSearchParams(query_params);
-    let uri = encodeURI(base_uri + "?" + qs.toString());
+    let uri = base_uri + "?" + qs.toString();
     console.log("Fetching " + uri);
     fetch(uri)
         .then(res => res.json())
