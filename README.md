@@ -2,6 +2,8 @@
 
 **Optdash** is a third-party dashboard for optuna.
 
+This dashboard is deprecated in favor of [optuna/optuna-dashboard](https://github.com/optuna/optuna-dashboard).
+
 ![README GIF](docs/images/optdash-readme.gif)
 
 ## Key features
