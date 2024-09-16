@@ -81,7 +81,7 @@ def create_request_handler_class(study_cache: StudyCache) -> type:
                                 }
                                 for study in sorted(
                                     studies, key=lambda s: (
-                                        s.datetime_start if s.datetime_start is None else datetime.now()
+                                        s.datetime_start if s.datetime_start is not None else datetime.now()
                                     )
                                 )
                             ]
