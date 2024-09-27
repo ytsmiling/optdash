@@ -15,6 +15,7 @@ class Study:
         self.best_trial = study.best_trial
         self.best_params = study.best_params
         self.best_value = study.best_value
+        self._is_multi_objective = study._is_multi_objective
         self.trials = study.get_trials(deepcopy=False)
 
     def get_trials(self, deepcopy: bool = True) -> List[optuna.trial.FrozenTrial]:
